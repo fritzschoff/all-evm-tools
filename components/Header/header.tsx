@@ -5,10 +5,14 @@ export default function Header() {
   return (
     <div className="flex justify-between items-center p-4">
       <h1>All EVM Tools</h1>
-      <nav>
-        <ul>
-          <Link href="/">Home</Link>
-          <HeaderClient />
+      <nav className="flex items-center gap-4">
+        <ul className="flex items-center gap-4">
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+          <li>
+            <HeaderClient />
+          </li>
         </ul>
       </nav>
     </div>

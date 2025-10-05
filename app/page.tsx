@@ -1,8 +1,8 @@
-'use cache'
-import { unstable_cacheLife as cacheLife } from 'next/cache'
- 
+"use cache";
+import { unstable_cacheLife as cacheLife } from "next/cache";
+
 export default async function Page() {
-  cacheLife('weeks')
+  cacheLife("weeks");
   return (
     <div>
       <h1>Home</h1>
