@@ -5,6 +5,7 @@ import { web3Config } from '@/constants/web3-config';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { ThemeProvider } from 'next-themes';
+import { RpcProvider } from '@/providers/rpcs';
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
+            <RpcProvider>{children}</RpcProvider>
           </ThemeProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
