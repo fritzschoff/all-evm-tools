@@ -5,5 +5,9 @@ export default function Button({
   children: React.ReactNode;
   onClick: () => void;
 }) {
-  return <button onClick={onClick}>{children}</button>;
+  return (
+    <button onClick={onClick} className="cursor-pointer  p-2 rounded">
+      {children}
+    </button>
+  );
 }

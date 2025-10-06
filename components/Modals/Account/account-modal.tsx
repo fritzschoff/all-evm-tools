@@ -1,6 +1,6 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import BaseModal from "../base-modal";
-import { useAccount } from "wagmi";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import BaseModal from '../base-modal';
+import { useAccount } from 'wagmi';
 
 export default function AccountModal({
   isOpen,
@@ -14,9 +14,6 @@ export default function AccountModal({
     <BaseModal isOpen={isOpen} onClose={onClose}>
       <div>
         <div>{address}</div>
-        <div>
-          <ConnectButton />
-        </div>
       </div>
     </BaseModal>
   );

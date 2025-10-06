@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useAccount } from "wagmi";
-import Button from "../Button/button";
-import AccountModal from "../Modals/Account/account-modal";
-import { useState } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import useTheme from "@/hooks/useTheme";
+import { useAccount } from 'wagmi';
+import Button from '../Button/button';
+import AccountModal from '../Modals/Account/account-modal';
+import { useState } from 'react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useTheme } from 'next-themes';
 
 export default function HeaderClient() {
   const { isConnected } = useAccount();
@@ -19,9 +19,9 @@ export default function HeaderClient() {
         <ConnectButton />
       )}
       <AccountModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-        {theme === "light" ? "Dark" : "Light"}
-      </button>
+      <Button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        {theme === 'light' ? '🌙' : '🌞'}
+      </Button>
     </div>
   );
 }
