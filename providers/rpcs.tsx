@@ -6,10 +6,12 @@ import {
   ReactNode,
 } from 'react';
 import { http, useAccount } from 'wagmi';
-import { createPublicClient } from 'viem';
+import { createPublicClient, PublicClient } from 'viem';
+import { defaultRpcs } from '@/constants/rpcs';
 
 type RpcContextType = {
   customRpc: string | null;
+  customRpcClient: PublicClient | null;
   setCustomRpc: (rpc: string) => void;
   clearCustomRpc: () => void;
   error: string | null;
@@ -17,8 +19,23 @@ type RpcContextType = {
 
 const RpcContext = createContext<RpcContextType | undefined>(undefined);
 
+const createRpcClient = (rpc: string | null) => {
+  if (!rpc) {
+    return null;
+  }
+  return createPublicClient({
+    batch: { multicall: true },
+    transport: http(rpc, {
+      batch: { batchSize: 100, wait: 500 },
+    }),
+  });
+};
+
 export const RpcProvider = ({ children }: { children: ReactNode }) => {
   const [customRpc, setCustomRpcState] = useState<string | null>(null);
+  const [customRpcClient, setCustomRpcClient] = useState<PublicClient | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
   const { chain, isConnected } = useAccount();
   const localStoageKey = `customRpc-${chain?.id}`;
@@ -31,6 +48,12 @@ export const RpcProvider = ({ children }: { children: ReactNode }) => {
           : null;
       if (storedRpc) {
         setCustomRpcState(storedRpc);
+        setCustomRpcClient(createRpcClient(storedRpc));
+      } else {
+        const defaultRpc =
+          defaultRpcs.find((rpc) => rpc.chainId === chain?.id)?.rpcUrl || null;
+        setCustomRpcState(defaultRpc);
+        setCustomRpcClient(createRpcClient(defaultRpc));
       }
     }
   }, [isConnected]);
@@ -40,10 +63,12 @@ export const RpcProvider = ({ children }: { children: ReactNode }) => {
   }, [chain?.id]);
 
   const setCustomRpc = async (rpc: string) => {
+    if (!rpc) {
+      setCustomRpcState(null);
+      return;
+    }
     setError(null);
-    const rpcFromString = createPublicClient({
-      transport: http(rpc),
-    });
+    const rpcFromString = createRpcClient(rpc);
     const rpcChainId = await rpcFromString.getChainId();
     if (rpcChainId !== chain?.id) {
       setError(
@@ -52,6 +77,7 @@ export const RpcProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     setCustomRpcState(rpc);
+    setCustomRpcClient(rpcFromString);
     if (typeof window !== 'undefined') {
       localStorage.setItem(localStoageKey, rpc);
     }
@@ -59,6 +85,7 @@ export const RpcProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCustomRpc = () => {
     setCustomRpcState(null);
+    setCustomRpcClient(null);
     if (typeof window !== 'undefined') {
       localStorage.removeItem(localStoageKey);
     }
@@ -66,7 +93,13 @@ export const RpcProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <RpcContext.Provider
-      value={{ customRpc, setCustomRpc, clearCustomRpc, error }}
+      value={{
+        customRpc,
+        customRpcClient,
+        setCustomRpc,
+        clearCustomRpc,
+        error,
+      }}
     >
       {children}
     </RpcContext.Provider>

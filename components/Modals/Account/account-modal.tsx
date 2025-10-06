@@ -7,6 +7,7 @@ import { defaultRpcs } from '@/constants/rpcs';
 import Divider from '../../Divider/divider';
 import Input from '../../Input/input';
 import { useRpc } from '@/providers/rpcs';
+import Dropdown from '@/components/Dropdown/dropdown';
 
 export default function AccountModal({
   isOpen,
@@ -18,7 +19,7 @@ export default function AccountModal({
   const { address, chain } = useAccount();
   const { switchChain } = useSwitchChain();
   const { disconnect } = useDisconnect();
-  const { customRpc, setCustomRpc, error } = useRpc();
+  const { customRpc, setCustomRpc, error, clearCustomRpc } = useRpc();
   const networkIsSupported =
     chain && chains.some((chain) => chain.id === chain?.id);
 
@@ -27,7 +28,7 @@ export default function AccountModal({
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose}>
-      <div className="p-6 min-w-[340px] max-w-[400px]">
+      <div className="p-6 min-w-[340px] max-w-[400px] flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2 mb-2">
             <span className="font-semibold text-gray-700">Address:</span>
@@ -50,6 +51,14 @@ export default function AccountModal({
             </span>
           </div>
         </div>
+        <Dropdown
+          options={chains.map((chain) => chain.name)}
+          onChange={(selected, index) => {
+            switchChain({ chainId: chains[index].id });
+          }}
+        >
+          {chain?.name}
+        </Dropdown>
         <Divider />
         <div className="mt-4 mb-2 font-semibold text-gray-700">Active RPC:</div>
         <div className="mb-2 px-2 py-1 bg-gray-50 rounded text-sm font-mono text-gray-800 break-all">

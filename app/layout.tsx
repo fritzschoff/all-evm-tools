@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/Header/header';
 import Providers from './providers';
 import '@rainbow-me/rainbowkit/styles.css';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <ReactQueryDevtools initialIsOpen={false} />
           <Header />
           {children}
         </Providers>
